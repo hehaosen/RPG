@@ -1,4 +1,4 @@
-define(['util'],function ($) {
+define(['util','base'],function ($,base) {
     var main = function () {
         var bgReady = false;
         var bgImage = new Image();
@@ -43,14 +43,14 @@ define(['util'],function ($) {
             } else {
             }
         };
-
-        $.KeyBoard.on("up", function () {
+        base.AddListenerKeyBoard();
+        base.Event.on("up", function () {
             choseMenu++
         });
-        $.KeyBoard.on("down", function () {
+        base.Event.on("down", function () {
             choseMenu--
         });
-        $.KeyBoard.on("enter", function () {
+        base.Event.on("enter", function () {
             choseMenu % 2 == 0 ? over = 2 : over = 1;
         });
         main();
