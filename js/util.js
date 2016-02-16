@@ -18,10 +18,6 @@ define(function () {
             return sColor;
         }
     };
-    var g = function () {
-        return document.getElementById('stage').getContext("2d");
-    }
-
     var extend = function (a, b) {
         for (var tem in b) {
             a[tem] = b[tem];
@@ -83,7 +79,6 @@ define(function () {
         KeyBoard: KeyBoard,
         shadowText: shadowText,
         extend: extend,
-        g: g,
         toColorRgb: toColorRgb
     };
 });
