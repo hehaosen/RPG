@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story>
+    <spirit>
+        <name>蜘蛛侠</name>
+        <bigface img=""></bigface>
+        <clothes leftImg="" rightImg="" upImg="" downImg=""></clothes>
+    </spirit>
+    <scene name="#1">
+        <map img=""></map>
+        <gut>
+            <talk spokesman="RPC#1">你好这是第一句台词</talk>
+            <talk spokesman="RPC#2">你好这是第二句台词</talk>
+            <talk spokesman="RPC#1">你好这是第二句台词</talk>
+        </gut>
+    </scene>
+</story>

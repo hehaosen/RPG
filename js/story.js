@@ -1,6 +1,6 @@
-createJS("xml.js");
-var story=function(){
+createJS("xml");
+var Story=function(){
     var load=function(filename){
-
+        console.log(loadXML(filename));
     }
-}();
+};

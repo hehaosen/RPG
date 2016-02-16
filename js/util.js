@@ -1,25 +1,5 @@
-/**
- * 公共方法名
- */
-
-
-/**
- * 调用其他 js
- * @param name  JS文件名
- */
-
-var createJS = function (name) {
-    new_element=document.createElement('script');
-    new_element.setAttribute('type', 'text/javascript');
-    new_element.setAttribute('src', 'js/' + name + '.js');
-    document.body.appendChild(new_element);
-}
-
-/**
- * 16进制颜色转为RGB格式
- * @returns array[R,G,B]
- */
-toColorRgb = function(sColor){
+define(function () {
+    var toColorRgb = function(sColor){
     if (sColor) {
         if (sColor.length === 4) {
             var sColorNew = "#";
@@ -38,25 +18,9 @@ toColorRgb = function(sColor){
         return sColor;
     }
 };
-
-/**
- * 获取主舞台节点
- * @returns {Element}
- */
-var $ = function () {
+var g = function () {
     return document.getElementById('stage').getContext("2d");
 }
-
-/**
- * 按键获取
- * @type {{}}
- */
-
-/**
- * a 继承 b
- * @param a
- * @param b
- */
 
 var extend = function (a, b) {
     for (var tem in b) {
@@ -141,3 +105,11 @@ var shadowText = function () {
 
     }
 }
+    return {
+        KeyBoard: KeyBoard,
+        shadowText:shadowText,
+        extend:extend,
+        g:g,
+        toColorRgb:toColorRgb
+    };
+});
