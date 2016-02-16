@@ -12,6 +12,7 @@ define(['util'],function ($) {
 
         // 渲染对象
         var render = function () {
+
             if (bgReady) {
                 $.g().drawImage(bgImage, 0, 0, 600, 600);
                 $.g().font = "30px 微软雅黑";
@@ -44,7 +45,6 @@ define(['util'],function ($) {
         };
 
         $.KeyBoard.on("up", function () {
-            Controller.onUp();
             choseMenu++
         });
         $.KeyBoard.on("down", function () {
