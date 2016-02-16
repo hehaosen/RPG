@@ -1,7 +1,9 @@
 define(['menu'],function (menu) {
     var main = function () {
         menu.init([{text:'新的开始',click:function(){
-            console.log("进入新的开始");
+            menu.fadeout(function(){
+                console.log("进入新的开始");
+            });
         }},{text:'旧的回忆',click:function(){
             console.log("旧的回忆");
         }},{text: '我是什么鬼',click:function(){
