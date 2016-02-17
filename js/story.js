@@ -1,5 +1,7 @@
-define(['menu'], function (menu) {
+define(function () {
     var _canvasEl;
+    var _sceneList=[];
+    var _sceneCurrentIndex=0;
     var _FPS = {
         fps: 10,
         now: null,
@@ -7,34 +9,28 @@ define(['menu'], function (menu) {
         delta: null
     };
     _FPS.interval = 1000 / _FPS.fps;
-
     var init = function () {
-
     }
-    var addScene = function () {
-        menu.init({
-            canvas: _canvasEl,
-            items: [{
-                text: '新的开始', click: function () {
-                    menu.fadeout(function () {
-                        console.log("进入新的开始");
-                    });
+    var Scenes ={
+        Add:function (scene) {
+            _sceneList.push(scene);
+        },
+        Play:function(name){
+            for(i=0;i< _sceneList.length;i++){
+                if(_sceneList[i].name==name){
+                    _sceneCurrentIndex=i;
                 }
-            }, {
-                text: '旧的回忆', click: function () {
-                    console.log("旧的回忆");
-                }
-            }, {
-                text: '我是什么鬼', click: function () {
-                    console.log("进入我是什么鬼");
-                }
-            }]
-        });
+            }
+        }
     }
     var Render = {
         loadCanvas: function (el) {
             _canvasEl = el;
         },
+        getCanvas:function(){
+            return _canvasEl;
+        }
+        ,
         start: function (FPS) {
             _FPS.fps = FPS.FPS;
             Render.render();
@@ -50,12 +46,12 @@ define(['menu'], function (menu) {
             }
         },
         renderFrame: function () {
-            menu.render();
+            _sceneList[_sceneCurrentIndex].scene.render();
         }
     }
     return {
         Renderer: Render,
         init: init,
-        addScene: addScene
+        Scenes:Scenes
     };
 });

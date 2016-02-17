@@ -24,15 +24,18 @@ define(function () {
         }
     }
 
-    var KeyBoard ={
-        Listener:[],
-        AddListener:function(context) {
+    var KeyBoard = {
+        Listener: [],
+        AddListener: function (context) {
             this.Listener.push(context);
         },
-        RemoveListener:function(context) {
-            this.Listener.remove(context);
+        RemoveListener: function (context) {
+            var a = this.Listener.indexOf(context);
+            if (a >= 0) {
+                this.Listener.splice(a, 1);
+            }
         },
-        Fire:function (type) {
+        Fire: function (type) {
             for (i = 0; i < this.Listener.length; i++) {
                 this.Listener[i].fire(type);
             }

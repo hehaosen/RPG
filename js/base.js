@@ -2,6 +2,9 @@ define(['util'],function ($) {
     var AddListenerKeyBoard=function(){
         $.KeyBoard.AddListener(this.Event);
     };
+    var RemoveListenerKeyBoard=function(){
+        $.KeyBoard.RemoveListener(this.Event);
+    };
     var Event={
         _listeners: {},
         on: function(type, fn) {
@@ -45,6 +48,7 @@ define(['util'],function ($) {
     };
     return {
         AddListenerKeyBoard:AddListenerKeyBoard,
+        RemoveListenerKeyBoard:RemoveListenerKeyBoard,
         Event:Event
     };
 });
