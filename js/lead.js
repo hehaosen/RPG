@@ -1,17 +1,34 @@
-define(['menu'],function (menu) {
+define(['menu'], function (menu) {
+    var fps = 10;
+    var now;
+    var then = Date.now();
+    var interval = 1000 / fps;
+    var delta;
     var main = function () {
-        menu.init([{text:'新的开始',click:function(){
-            menu.fadeout(function(){
-                console.log("进入新的开始");
-            });
-        }},{text:'旧的回忆',click:function(){
-            console.log("旧的回忆");
-        }},{text: '我是什么鬼',click:function(){
-            console.log("进入我是什么鬼");
-        }}]);
+        menu.init([{
+            text: '新的开始', click: function () {
+                menu.fadeout(function () {
+                    console.log("进入新的开始");
+                });
+            }
+        }, {
+            text: '旧的回忆', click: function () {
+                console.log("旧的回忆");
+            }
+        }, {
+            text: '我是什么鬼', click: function () {
+                console.log("进入我是什么鬼");
+            }
+        }]);
         var main = function () {
-            menu.render();
             requestAnimationFrame(main);
+            now = Date.now();
+            delta = now - then;
+            if (delta > interval) {
+                // 这里不能简单then=now，否则还会出现上边简单做法的细微时间差问题。例如fps=10，每帧100ms，而现在每16ms（60fps）执行一次draw。16*7=112>100，需要7次才实际绘制一次。这个情况下，实际10帧需要112*10=1120ms>1000ms才绘制完成。
+                then = now - (delta % interval);
+                menu.render();// ... Code for Drawing the Frame ...
+            }
         };
         main();
     }
