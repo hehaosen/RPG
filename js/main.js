@@ -1,5 +1,7 @@
 require.config({paths:{
-    "lead":"lead"
+    "lead":"lead",
+    "util":"util",
+    "base":"base"
 }});
 require(['lead'],function(lead){
    lead.main();
