@@ -1,4 +1,4 @@
-define(['base', 'canvas'], function (base, $) {
+define(['base'], function (base) {
     var current = 0;
     var items =[];
     var top = 300;
@@ -14,6 +14,7 @@ define(['base', 'canvas'], function (base, $) {
     var fadeoutAlpha=0;
     var fadeoutCallback;
     var stepY = 100;
+    var $;
     base.AddListenerKeyBoard();
     base.Event.on("up", function () {
         current++
@@ -26,8 +27,9 @@ define(['base', 'canvas'], function (base, $) {
     base.Event.on("enter", function () {
         items[Math.abs((current) % items.length)].click();
     });
-    var init = function (Items) {
-        items=Items;
+    var init = function (config) {
+        $=config.canvas;
+        items=config.items;
         bgImage.src = background;
         bgImage.onload = function () {
             flushFlag = true;

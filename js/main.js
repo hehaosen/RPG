@@ -1,8 +1,9 @@
 require.config({paths:{
-    "lead":"lead",
     "util":"util",
     "base":"base"
 }});
-require(['lead'],function(lead){
-   lead.main();
+require(['story'],function(story){
+    story.Renderer.loadCanvas(document.getElementById('stage').getContext("2d"));
+    story.addScene();
+    story.Renderer.start({FPS:10});
 });
