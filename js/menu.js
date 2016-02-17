@@ -1,4 +1,4 @@
-define(['base'], function (base) {
+define(['util'], function (util) {
     var current = 0;
     var items =[];
     var top = 300;
@@ -16,18 +16,23 @@ define(['base'], function (base) {
     var fadeoutCallback;
     var stepY = 100;
     var $;
+    var context=this;
     var ListenerKeyBoard=function(){
-        base.AddListenerKeyBoard();
-        base.Event.on("up", function () {
-            current++;
-            flushFlag = true;
-        });
-        base.Event.on("down", function () {
-            current--;
-            flushFlag = true;
-        });
-        base.Event.on("enter", function () {
-            items[Math.abs((current) % items.length)].click();
+        util.setListener(function(type){
+            switch(type){
+                case "up":
+                    console.log("up");
+                    current++;
+                    flushFlag = true;
+                    break;
+                case "down":
+                    current--;
+                    flushFlag = true;
+                    break;
+                case "enter":
+                    items[Math.abs((current) % items.length)].click();
+                    break;
+            }
         });
     }
     var init = function (config) {
@@ -84,7 +89,7 @@ define(['base'], function (base) {
         fadeoutCallback=fn;
     };
     var stop=function(){
-        base.RemoveListenerKeyBoard();
+        //base.RemoveListenerKeyBoard();
     };
     return {
         init: init,//three two one action!!!

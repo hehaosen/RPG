@@ -20,16 +20,7 @@ require(['story','menu','day1'],function(story,menu,day1){
         }]
     });
     day1.init({
-        story:story,
-        items: [{
-            text: '我是场景2', click: function () {
-                console.log("click");
-                day1.stop();
-                day1.fadeout(function () {
-                    console.log("11111");
-                });
-            }
-        }]
+        story:story
     });
     story.Scenes.Add({name:'menu',scene:menu});
     story.Scenes.Add({name:'day1',scene:day1});

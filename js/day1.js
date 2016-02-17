@@ -1,57 +1,71 @@
-define(['base'], function (base) {
+define(['util'], function (util) {
     var current = 0;
-    var items =[];
     var top = 300;
     var left = 250;
     var height = 600;
     var width = 600;
     var bgImage = new Image();
+    var dialogImage=new Image();
     var background = 'images/day1/bg.jpg';
     var font = "30px 微软雅黑";
-    var fillStyle = "red";
+    var fillStyle = "white";
     var flushFlag = false;
-    var fadeoutFlag=false;
     var listenerFlag=false;
-    var fadeoutAlpha=0;
-    var fadeoutCallback;
-    var stepY = 100;
+
     var $;
+    var context=this;
+    var RPC1={
+        image:new Image(),
+        face:'images/day1/RPC1.png'
+    };
+    var RPC2={
+        image:new Image(),
+        face:'images/day1/RPC2.png'
+    }
+    var gut={index:0,talks:[{spokesman:RPC1,talk:"你好这是第一句台词"},
+        {spokesman:RPC2,talk:"你好这是第二句台词"},
+        {spokesman:RPC1,talk:"你好这是第三句台词"}]};
     var ListenerKeyBoard=function(){
-        base.AddListenerKeyBoard();
-        base.Event.on("up", function () {
-            current++;
-            flushFlag = true;
-        });
-        base.Event.on("down", function () {
-            current--;
-            flushFlag = true;
-        });
-        base.Event.on("enter", function () {
-            items[Math.abs((current) % items.length)].click();
+        util.setListener(function(type){
+            switch(type){
+                case "enter":
+                    if(gut.index<gut.talks.length-1){
+                        gut.index++;
+                        flushFlag=true;
+                    }
+                    break;
+            }
         });
     }
     var init = function (config) {
         $=config.story.Renderer.getCanvas();
-        items=config.items;
         bgImage.src = background;
+        dialogImage.src='images/day1/dailog.png';
         bgImage.onload = function () {
             flushFlag = true;
         };
+        dialogImage.onload=function(){
+            flushFlag = true;
+        }
+       RPC1.image.src=RPC1.face;
+        RPC2.image.src=RPC2.face;
+        RPC1.image.onload=function(){
+            flushFlag=true;
+        }
+        RPC2.image.onload=function(){
+            flushFlag=true;
+        }
     };
 
     var renderBackground = function () {
         $.drawImage(bgImage, 0, 0, width, height);
+        $.drawImage(dialogImage, 0, 450, 580, 120);
         $.font = font;
         $.fillStyle = fillStyle;
     };
-    var renderMenu = function () {
-        for (var i = 0; i < items.length; i++) {
-            if (i == Math.abs((current) % items.length)) {
-                $.fillText(items[i].text + "←", left, top + i * stepY);
-            } else {
-                $.fillText(items[i].text, left, top + i * stepY);
-            }
-        }
+    var renderGut= function () {
+        $.drawImage(gut.talks[gut.index].spokesman.image, 40,320,150,150);
+        $.fillText(gut.talks[gut.index].talk,140,500);
     };
     var render = function () {
         if(listenerFlag==false){
@@ -60,35 +74,16 @@ define(['base'], function (base) {
         }
         if (flushFlag == true) {
             renderBackground();
-            renderMenu();
+            renderGut();
             flushFlag = false;
         }
-        if(fadeoutFlag==true){
-            if(fadeoutAlpha<=30) {
-                renderFadeout();
-            }else{
-                fadeoutFlag=false;
-                fadeoutCallback();
-            }
-        }
-    };
-    var renderFadeout=function(){
-        $.fillStyle = 'rgba(181, 25, 25, ' + (fadeoutAlpha++) / 100 + ')';  //填充的颜色
-        $.linewidth = 10;  //边框宽
-        $.fillRect(0, 0, width, height);  //填充颜色 x y坐标 宽 高
-    };
-    var fadeout=function(fn){
-        fadeoutFlag=true;
-        fadeoutAlpha=0;
-        fadeoutCallback=fn;
     };
     var stop=function(){
-        base.RemoveListenerKeyBoard();
+        //base.RemoveListenerKeyBoard();
     };
     return {
         init: init,//three two one action!!!
         stop:stop,//
-        render: render,
-        fadeout:fadeout
+        render: render
     };
 });
