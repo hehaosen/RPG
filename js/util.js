@@ -23,31 +23,19 @@ define(function () {
             a[tem] = b[tem];
         }
     }
-
-    var KeyBoard ={
-        Listener:[],
-        AddListener:function(context) {
-            this.Listener.push(context);
-        },
-        RemoveListener:function(context) {
-            this.Listener.remove(context);
-        },
-        Fire:function (type) {
-            for (i = 0; i < this.Listener.length; i++) {
-                this.Listener[i].fire(type);
-            }
-            return this;
-        }
-    };
+    var Listener;
+    var setListener=function(context){
+        Listener=context;
+    }
     addEventListener("keydown", function (e) {
         if (e.keyCode == 38) {
-            KeyBoard.Fire("up");
+            Listener("up");
         } //上
         if (e.keyCode == 40) {
-            KeyBoard.Fire("down");
+            Listener("down");
         } //下
         if (e.keyCode == 13 || e.keyCode == 32) {
-            KeyBoard.Fire("enter");
+            Listener("enter");
         }//回车 or 空格
     }, false);
     /**
@@ -76,7 +64,8 @@ define(function () {
             }
     }
     return {
-        KeyBoard: KeyBoard,
+       // KeyBoard: KeyBoard,
+        setListener:setListener,
         shadowText: shadowText,
         extend: extend,
         toColorRgb: toColorRgb
