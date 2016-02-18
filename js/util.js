@@ -141,11 +141,9 @@ define(function () {
                     done = true;
                     return;
                 }
-            }
-            else {
+            }else {
                 frame = 0;
             }
-
             var x = pos[0];
             var y = pos[1];
             if (dir == 'vertical') {
