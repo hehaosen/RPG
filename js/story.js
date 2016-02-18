@@ -46,6 +46,10 @@ define(function () {
             }
         },
         renderFrame: function () {
+            if(!_sceneList[_sceneCurrentIndex].scene.isListener){
+                _sceneList[_sceneCurrentIndex].scene.listener();
+                _sceneList[_sceneCurrentIndex].scene.isListener=true;
+            }
             _sceneList[_sceneCurrentIndex].scene.render();
         }
     }

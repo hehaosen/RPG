@@ -9,6 +9,15 @@ define(['util'], function (util) {
     var gut={index:0,talks:[{spokesman:RPC1,talk:"你好这是第一句台词"},
         {spokesman:RPC2,talk:"你好这是第二句台词"},
         {spokesman:RPC1,talk:"你好这是第三句台词"}]};
+
+    var init = function (config) {
+        $=config.story.Renderer.getCanvas();
+        util.R.load([background,dialog,RPC1,RPC2]);
+        util.R.onReady(function(){
+            flushFlag=true;
+        });
+        whenEnding=config.whenEnding;
+    };
     var listener=function(){
         util.setListener(function(type){
             switch(type){
@@ -23,14 +32,6 @@ define(['util'], function (util) {
             }
         });
     }
-    var init = function (config) {
-        $=config.story.Renderer.getCanvas();
-        util.R.load([background,dialog,RPC1,RPC2]);
-        util.R.onReady(function(){
-            flushFlag=true;
-        });
-        whenEnding=config.whenEnding;
-    };
     var renderBackground = function () {
         $.drawImage(util.R.get(background), 0, 0, width, height);
         $.drawImage(util.R.get(dialog), 0, 450, 580, 120);
