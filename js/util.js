@@ -34,6 +34,12 @@ define(function () {
         if (e.keyCode == 40) {
             Listener("down");
         } //下
+        if(e.keyCode==37){
+            Listener("left");
+        }
+        if(e.keyCode==39){
+            Listener("right");
+        }
         if (e.keyCode == 13 || e.keyCode == 32) {
             Listener("enter");
         }//回车 or 空格
@@ -113,47 +119,46 @@ define(function () {
         }
     };
     var Sprite = function (ctx, url, pos, size, speed, frames, dir, once) {
-        this.pos = pos;
-        this.size = size;
-        this.speed = typeof speed === 'number' ? speed : 0;
-        this.frames = frames;
-        this._index = 0;
-        this.url = url;
-        this.dir = dir || 'horizontal';
-        this.once = once;
-        this.ctx = ctx;
+        var pos = pos;
+        var size = size;
+        var speed = typeof speed === 'number' ? speed : 0;
+        var frames = frames;
+        var _index = 0;
+        var url = url;
+        var dir = dir || 'horizontal';
+        var once = once;
+        var ctx = ctx;
         var update = function (dt) {
-            this._index += this.speed * dt;
+            _index += speed * dt;
         }
-        var render = function () {
+        var render = function (where) {
             var frame;
-            if (this.speed > 0) {
-                var max = this.frames.length;
-                var idx = Math.floor(this._index);
-                frame = this.frames[idx % max];
-
-                if (this.once && idx >= max) {
-                    this.done = true;
+            if (speed > 0) {
+                var max = frames.length;
+                var idx = Math.floor(_index);
+                frame = frames[idx % max];
+                if (once && idx >= max) {
+                    done = true;
                     return;
                 }
             }
             else {
                 frame = 0;
             }
-            var x = this.pos[0];
-            var y = this.pos[1];
 
-            if (this.dir == 'vertical') {
-                y += frame * this.size[1];
+            var x = pos[0];
+            var y = pos[1];
+            if (dir == 'vertical') {
+                y += frame * size[1];
             }
             else {
-                x += frame * this.size[0];
+                x += frame * size[0];
             }
-            this.ctx.drawImage(Rs.get(this.url),
+            ctx.drawImage(R.get(url),
                 x, y,
-                this.size[0], this.size[1],
-                0, 0,
-                this.size[0], this.size[1]);
+                size[0], size[1],
+                where[0],where[1],
+                size[0], size[1]);
         }
         return {
             render: render,
