@@ -6,6 +6,24 @@ define(['util'], function (util) {
     var RPC2='images/day1/RPC2.png';
     var dialog='images/day1/dialog.png';
     var background = 'images/day1/bg.jpg';
+    var map='images/game1/map.png';
+    var mapalias={
+        D1:[0,0],//地砖1
+        D2:[0,1],//地砖2
+        L1:[0,2],//小牌子
+        F1:[0,3],//花1
+        G1:[0,4],//草1
+        W1:[0,5],//水1
+        W2:[0,6],//水2
+        W3:[0,7],//水3
+        T1:[1,0],//树1
+        T2:[2,0],//树1
+        F2:[1,1],//花2
+        B1:[3,0],//桥1
+        B2:[3,1],//桥2
+        B3:[3,2]//桥3
+    }
+    var maper;
     var flyer={
         image:'images/game1/sprites.png',
         pos:[0,78],
@@ -30,11 +48,12 @@ define(['util'], function (util) {
 
     var init = function (config) {
         $=config.story.Renderer.getCanvas();
-        util.R.load([background,dialog,RPC1,RPC2,flyer.image]);
+        util.R.load([background,dialog,RPC1,RPC2,flyer.image,map]);
         util.R.onReady(function(){
             whenEnding=config.whenEnding;
             flyer.sprite=new util.Sprite($,flyer.image,flyer.pos ,flyer.size ,flyer.speed,flyer.frames);
             flyer1.sprite=new util.Sprite($,flyer1.image,flyer1.pos ,flyer1.size ,flyer1.speed,flyer1.frames);
+            maper=new util.Map($,map,23,mapalias);
             flushFlag=true;
         });
 
@@ -81,17 +100,45 @@ define(['util'], function (util) {
         });
     }
     var renderBackground = function () {
-        $.drawImage(util.R.get(background), 0, 0, width, height);
+        //$.drawImage(util.R.get(background), 0, 0, width, height);
+        maper.render([
+            ["D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1"],
+            ["D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","T2","D2","D2","D2","D2","F2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","T1","D2","D2","D2","F2","D2","F2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","T2","D2","D2","F2","D2","D2","D2","F2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T1","D2","F2","D2","D2","D2","D2","D2","T1","D2","D2","D2","F2","D2","F2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T2","F2","D2","F2","D2","D2","D2","D2","T2","D2","D2","D2","D2","F2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","F2","D2","D2","D2","F2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","F2","D2","F2","D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T1","D2","F2","D2","D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","T1","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","T2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2","D2"],
+            ["D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1","D1"]
+        ]);
         $.drawImage(util.R.get(dialog), 0, 450, 580, 120);
         $.font = font;
         $.fillStyle = fillStyle;
     };
     var renderGut= function () {
+
         flyer.sprite.render(flayerWhere);
         flyer1.sprite.render(flayer1Where);
         $.drawImage(util.R.get(gut.talks[gut.index].spokesman), 40,320,150,150);
         $.fillText(gut.talks[gut.index].talk,140,500);
-
 
     };
     var render = function () {

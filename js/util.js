@@ -163,9 +163,35 @@ define(function () {
             update: update
         }
     }
+    var Map=function(ctx,url,size,alias){
+        var ctx = ctx;
+        var url = url;
+        var size = size;
+        var alias=alias;
+        var renderBlock = function (which,where) {
+           ctx.drawImage(R.get(url),
+                which[1]*size,which[0]*size,
+                size,size,
+                where[1]*size,(where[0])*size,
+                size,size);
+        }
+        var render=function(maplist){
+            for(var i=0;i<maplist.length;i++){
+                for(var j=0;j<maplist[i].length;j++){
+                    var unit=maplist[i][j];
+                    renderBlock(alias[unit],[i,j]);
+                }
+            }
+        }
+        return{
+            renderBlock:renderBlock,
+            render:render
+        }
+    }
     return {
         // KeyBoard: KeyBoard,
         Sprite: Sprite,
+        Map: Map,
         R:R,
         setListener: setListener,
         shadowText: shadowText,
