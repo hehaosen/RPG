@@ -43,6 +43,21 @@ define(function () {
         if (e.keyCode == 13 || e.keyCode == 32) {
             Listener("enter");
         }//回车 or 空格
+        if (e.keyCode ==87) {
+            Listener("w");
+        } //上
+        if (e.keyCode == 65) {
+            Listener("a");
+        } //下
+        if(e.keyCode==83){
+            Listener("s");
+        }
+        if(e.keyCode==68){
+            Listener("d");
+        }
+        if(e.keyCode==80){
+            Listener("p");
+        }
     }, false);
     /**
      * 渐变文字
@@ -86,7 +101,7 @@ define(function () {
             },
         _load:function (url) {
             if (this.RCache[url]) {
-                return RCache[url];
+                return this.RCache[url];
             }
             else {
                 var img = new Image();
@@ -163,11 +178,10 @@ define(function () {
             update: update
         }
     };
-    var Map=function(ctx,url,size,alias){
+    var Map=function(ctx){
         var ctx = ctx;
-        var url = url;
-        var size = size;
-        var alias=alias;
+        var url = 'images/public/map.png';
+        var size =23;
         var renderBlock = function (which,where) {
            ctx.drawImage(R.get(url),
                 which[1]*size,which[0]*size,
@@ -178,8 +192,8 @@ define(function () {
         var render=function(maplist){
             for(var i=0;i<maplist.length;i++){
                 for(var j=0;j<maplist[i].length;j++){
-                    var unit=maplist[i][j];
-                    renderBlock(alias[unit],[i,j]);
+                    //console.log(maplist[i][j],[i,j]);
+                    renderBlock(maplist[i][j],[i,j]);
                 }
             }
         }

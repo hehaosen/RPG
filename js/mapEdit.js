@@ -2,11 +2,13 @@ define(['util'], function (util) {
     var current = 0;var top = 300;var left = 250;var height = 600;var width = 600;
     var font = "30px 微软雅黑";var fillStyle = "white";var flushFlag = false;
     var whenEnding;var $;
-    var RPC1='images/day1/RPC1.png';
-    var RPC2='images/day1/RPC2.png';
-    var dialog='images/day1/dialog.png';
     var background = 'images/day1/bg.jpg';
     var map='images/public/map.png';
+    var indexX=0;
+    var indexY=0;
+    var toolX=0;
+    var toolY=0;
+    var maper;
     var mapMap=[
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
@@ -35,100 +37,86 @@ define(['util'], function (util) {
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
     ];
-    var maper;
-    var flyer={
-        image:'images/public/sprites.png',
-        pos:[0,78],
-        size:[80, 39],
-        speed:1,
-        frames:[0, 1, 2, 3, 2, 1],
-        sprite:null
-    };
-    var flyer1={
-        image:'images/public/sprites.png',
-        pos:[0,78],
-        size:[80, 39],
-        speed:1,
-        frames:[0, 1, 2, 3, 2, 1],
-        sprite:null
-    };
-    var flayerWhere=[100,100];
-    var flayer1Where=[200,200];
     var mapCTX;
-    var gut={index:0,talks:[{spokesman:RPC1,talk:"你好这是第一句台词"},
-        {spokesman:RPC2,talk:"你好这是第二句台词"},
-        {spokesman:RPC1,talk:"你好这是第三句台词"}]};
-
+    var toolsCTX;
     var init = function (config) {
         $=config.story.Renderer.getCanvas();
         mapCTX=util.CTX();
-        util.R.load([background,dialog,RPC1,RPC2,flyer.image,map]);
+        toolsCTX=util.CTX(460,460);
+        util.R.load([background,map]);
         util.R.onReady(function(){
             whenEnding=config.whenEnding;
-            flyer.sprite=util.Sprite($,flyer.image,flyer.pos ,flyer.size ,flyer.speed,flyer.frames);
-            flyer1.sprite=util.Sprite($,flyer1.image,flyer1.pos ,flyer1.size ,flyer1.speed,flyer1.frames);
             maper=util.Map(mapCTX.context);
+            toolsCTX.context.drawImage(util.R.get(map),0,0,460,460);
             maper.render(mapMap);
             flushFlag=true;
+            document.body.appendChild(toolsCTX.canvas);
         });
+
     };
     var listener=function(){
         util.setListener(function(type){
             switch(type){
                 case "enter":
-                    if(gut.index<gut.talks.length-1){
-                        gut.index++;
-                    }else{
-                        whenEnding();
-                    }
+                    mapMap[indexY][indexX]=[toolY,toolX];
+                    maper.render(mapMap);
+                    $.drawImage(mapCTX.canvas,0,0);
                     break;
                 case "down":
-                    flayerWhere[1]++;
-                    flayer1Where[1]--;
-                    flyer.sprite.update(1);
-                    flyer1.sprite.update(1);
+                    indexY++;
                     break;
                 case "up":
-                    flayerWhere[1]--;
-                    flayer1Where[1]++;
-                    flyer.sprite.update(1);
-                    flyer1.sprite.update(1);
+                    indexY--;
                     break;
                 case "right":
-                    flayerWhere[0]++;
-                    flayer1Where[0]--;
-                    flyer.sprite.update(1);
-                    flyer1.sprite.update(1);
+                    indexX++;
                     break;
                 case "left":
-                    flayerWhere[0]--;
-                    flayer1Where[0]++;
-                    flyer.sprite.update(1);
-                    flyer1.sprite.update(1);
+                    indexX--;
+                    break;
+                case "s":
+                    toolY++;
+                    break;
+                case "w":
+                    toolY--;
+                    break;
+                case "d":
+                    toolX++;
+                    break;
+                case "a":
+                    toolX--;
+                    break;
+                case "p":
+                    console.log(JSON.stringify(mapMap));
                     break;
 
             }
             flushFlag=true;
         });
     }
+    var renderBox=function(){
+        $.strokeStyle="#ff00ff";
+        $.strokeRect(indexX*23,indexY*23,23,23);
+        toolsCTX.context.strokeStyle="red";
+        toolsCTX.context.strokeRect(toolX*23,toolY*23,23,23);
+
+    }
     var renderBackground = function () {
-        //$.drawImage(util.R.get(background), 0, 0, width, height
-        $.drawImage(mapCTX.canvas,0,0);
-        $.drawImage(util.R.get(dialog), 0, 450, 580, 120);
+       $.drawImage(mapCTX.canvas,0,0);
+        toolsCTX.context.drawImage(util.R.get(map),0,0);
+        toolsCTX.context.fillText("P:输出地图到控制台",0,300);
+        toolsCTX.context.fillText("空格:更换地图块",0,320);
+        toolsCTX.context.fillText("上下左右:控制地图光标",0,340);
+        toolsCTX.context.fillText("WSAD:控制地图块光标",0,360);
+
         $.font = font;
         $.fillStyle = fillStyle;
-    };
-    var renderGut= function () {
-        flyer.sprite.render(flayerWhere);
-        flyer1.sprite.render(flayer1Where);
-        $.drawImage(util.R.get(gut.talks[gut.index].spokesman), 40,320,150,150);
-        $.fillText(gut.talks[gut.index].talk,140,500);
-
     };
     var render = function () {
         if (flushFlag == true) {
             renderBackground();
-            renderGut();
+            renderBox();
+
             flushFlag = false;
         }
     };
