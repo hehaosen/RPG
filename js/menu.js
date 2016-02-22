@@ -5,19 +5,17 @@ define(['util'], function (util) {
     var left = 250;
     var height = 600;
     var width = 600;
-    var bgImage = new Image();
     var background = 'images/main/bg.jpg';
     var font = "30px 微软雅黑";
     var fillStyle = "red";
     var flushFlag = false;
     var fadeoutFlag=false;
-    var listenerFlag=false;
     var fadeoutAlpha=0;
     var fadeoutCallback;
     var stepY = 100;
     var $;
     var context=this;
-    var ListenerKeyBoard=function(){
+    var listener=function(){
         util.setListener(function(type){
             switch(type){
                 case "up":
@@ -38,15 +36,15 @@ define(['util'], function (util) {
     var init = function (config) {
         $=config.story.Renderer.getCanvas();
         items=config.items;
-        bgImage.src = background;
-        bgImage.onload = function () {
-            flushFlag = true;
-        };
+        util.R.load(background);
+        util.R.onReady(function(){
+            flushFlag=true;
+        });
 
     };
 
     var renderBackground = function () {
-        $.drawImage(bgImage, 0, 0, width, height);
+        $.drawImage(util.R.get(background), 0, 0, width, height);
         $.font = font;
         $.fillStyle = fillStyle;
     };
@@ -60,10 +58,6 @@ define(['util'], function (util) {
         }
     };
     var render = function () {
-        if(listenerFlag==false){
-            ListenerKeyBoard();
-            listenerFlag=true;
-        }
         if (flushFlag == true) {
             renderBackground();
             renderMenu();
@@ -92,6 +86,7 @@ define(['util'], function (util) {
         //base.RemoveListenerKeyBoard();
     };
     return {
+        listener:listener,
         init: init,//three two one action!!!
         stop:stop,//
         render: render,

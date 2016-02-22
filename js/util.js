@@ -24,9 +24,9 @@ define(function () {
         }
     }
     var Listener;
-    var setListener=function(context){
-        Listener=context;
-    }
+    var setListener = function (context) {
+        Listener = context;
+    };
     addEventListener("keydown", function (e) {
         if (e.keyCode == 38) {
             Listener("up");
@@ -34,9 +34,30 @@ define(function () {
         if (e.keyCode == 40) {
             Listener("down");
         } //下
+        if(e.keyCode==37){
+            Listener("left");
+        }
+        if(e.keyCode==39){
+            Listener("right");
+        }
         if (e.keyCode == 13 || e.keyCode == 32) {
             Listener("enter");
         }//回车 or 空格
+        if (e.keyCode ==87) {
+            Listener("w");
+        } //上
+        if (e.keyCode == 65) {
+            Listener("a");
+        } //下
+        if(e.keyCode==83){
+            Listener("s");
+        }
+        if(e.keyCode==68){
+            Listener("d");
+        }
+        if(e.keyCode==80){
+            Listener("p");
+        }
     }, false);
     /**
      * 渐变文字
@@ -51,21 +72,152 @@ define(function () {
             x: 0,//x坐标
             y: 0
         },
-            this.init = function (data) {
+        this.init = function (data) {
                 extend(_self.conf, data);
                 console.log(_self.conf);
                 _self.conf.stage.font = _self.conf.fontSize + 'px 微软雅黑';
                 _self.conf.stage.fillStyle = _self.conf.color;
                 _self.globalAlpha = 0.5;
                 _self.conf.stage.fillText(_self.conf.text, _self.conf.x, _self.conf.y);
-            },
-            this.animation = function () {
+        },
+        this.animation = function () {
+        }
+    };
 
+    var R = {
+        RCache:{},
+        loading:[],
+        readyCallbacks:[],
+        // Load an image url or an array of image urls
+        load:function(urlOrArr){
+            if (urlOrArr instanceof Array) {
+                urlOrArr.forEach(function (url) {
+                    R._load(url);
+                });
             }
+            else {
+                R._load(urlOrArr);
+            }
+            },
+        _load:function (url) {
+            if (this.RCache[url]) {
+                return this.RCache[url];
+            }
+            else {
+                var img = new Image();
+                img.onload = function () {
+                    R.RCache[url] = img;
+                    if (R.isReady()) {
+                        R.readyCallbacks.forEach(function (func) {
+                            func();
+                        });
+                    }
+                };
+                this.RCache[url] = false;
+                img.src = url;
+            }
+            },
+        get:function (url) {
+            return R.RCache[url];
+            },
+        isReady:function () {
+            var ready = true;
+            for (var k in this.RCache) {
+                if (R.RCache.hasOwnProperty(k) && !R.RCache[k]) {
+                    ready = false;
+                }
+            }
+            return ready;
+            },
+        onReady:function (func) {
+            R.readyCallbacks.push(func);
+        }
+    };
+    var Sprite = function (ctx, url, pos, size, speed, frames, dir, once) {
+        var pos = pos;
+        var size = size;
+        var speed = typeof speed === 'number' ? speed : 0;
+        var frames = frames;
+        var _index = 0;
+        var url = url;
+        var dir = dir || 'horizontal';
+        var once = once;
+        var ctx = ctx;
+        var update = function (dt) {
+            _index += speed * dt;
+        }
+        var render = function (where) {
+            var frame;
+            if (speed > 0) {
+                var max = frames.length;
+                var idx = Math.floor(_index);
+                frame = frames[idx % max];
+                if (once && idx >= max) {
+                    done = true;
+                    return;
+                }
+            }else {
+                frame = 0;
+            }
+            var x = pos[0];
+            var y = pos[1];
+            if (dir == 'vertical') {
+                y += frame * size[1];
+            }
+            else {
+                x += frame * size[0];
+            }
+            ctx.drawImage(R.get(url),
+                x, y,
+                size[0], size[1],
+                where[0],where[1],
+                size[0], size[1]);
+        }
+        return {
+            render: render,
+            update: update
+        }
+    };
+    var Map=function(ctx){
+        var ctx = ctx;
+        var url = 'images/public/map.png';
+        var size =23;
+        var renderBlock = function (which,where) {
+           ctx.drawImage(R.get(url),
+                which[1]*size,which[0]*size,
+                size,size,
+                where[1]*size,(where[0])*size,
+                size,size);
+        }
+        var render=function(maplist){
+            for(var i=0;i<maplist.length;i++){
+                for(var j=0;j<maplist[i].length;j++){
+                    //console.log(maplist[i][j],[i,j]);
+                    renderBlock(maplist[i][j],[i,j]);
+                }
+            }
+        }
+        return{
+            renderBlock:renderBlock,
+            render:render
+        }
+    };
+    var CTX=function(width,height){
+        var canvasBuffer=document.createElement("canvas");
+        canvasBuffer.width=width||600;
+        canvasBuffer.height=height||600;
+        var contextBuffer=canvasBuffer.getContext("2d");
+        contextBuffer.clearRect(0,0,canvasBuffer.width,canvasBuffer.height);
+        return {canvas:canvasBuffer,
+                context:contextBuffer};
     }
     return {
-       // KeyBoard: KeyBoard,
-        setListener:setListener,
+        // KeyBoard: KeyBoard,
+        Sprite: Sprite,
+        Map: Map,
+        R:R,
+        CTX:CTX,
+        setListener: setListener,
         shadowText: shadowText,
         extend: extend,
         toColorRgb: toColorRgb
