@@ -26,7 +26,7 @@ define(function () {
     var Listener;
     var setListener = function (context) {
         Listener = context;
-    }
+    };
     addEventListener("keydown", function (e) {
         if (e.keyCode == 38) {
             Listener("up");
@@ -162,7 +162,7 @@ define(function () {
             render: render,
             update: update
         }
-    }
+    };
     var Map=function(ctx,url,size,alias){
         var ctx = ctx;
         var url = url;
@@ -187,12 +187,22 @@ define(function () {
             renderBlock:renderBlock,
             render:render
         }
+    };
+    var CTX=function(width,height){
+        var canvasBuffer=document.createElement("canvas");
+        canvasBuffer.width=width||600;
+        canvasBuffer.height=height||600;
+        var contextBuffer=canvasBuffer.getContext("2d");
+        contextBuffer.clearRect(0,0,canvasBuffer.width,canvasBuffer.height);
+        return {canvas:canvasBuffer,
+                context:contextBuffer};
     }
     return {
         // KeyBoard: KeyBoard,
         Sprite: Sprite,
         Map: Map,
         R:R,
+        CTX:CTX,
         setListener: setListener,
         shadowText: shadowText,
         extend: extend,
