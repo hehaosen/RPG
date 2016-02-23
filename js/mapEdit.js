@@ -1,14 +1,9 @@
-define(['util'], function (util) {
-    var current = 0;var top = 300;var left = 250;var height = 600;var width = 600;
-    var font = "30px 微软雅黑";var fillStyle = "white";var flushFlag = false;
-    var whenEnding;var $;
-    var background = 'images/day1/bg.jpg';
-    var map='images/public/map.png';
+define(['util','map'], function (util,map) {
+        var $;var flushFlag = false;
     var indexX=0;
     var indexY=0;
     var toolX=0;
     var toolY=0;
-    var maper;
     var mapMap=[
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
@@ -37,20 +32,16 @@ define(['util'], function (util) {
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
     ];
-    var mapCTX;
     var toolsCTX;
     var init = function (config) {
         $=config.story.Renderer.getCanvas();
-        mapCTX=util.CTX();
         toolsCTX=util.CTX(460,460);
-        util.R.load([background,map]);
+        map.init(mapMap);
         util.R.onReady(function(){
-            whenEnding=config.whenEnding;
-            maper=util.Map(mapCTX.context);
-            toolsCTX.context.drawImage(util.R.get(map),0,0,460,460);
-            maper.render(mapMap);
-            flushFlag=true;
+            map.reload();
+            toolsCTX.context.drawImage(map.getSourceImage(),0,0,460,460);
             document.body.appendChild(toolsCTX.canvas);
+            flushFlag=true;
         });
 
     };
@@ -59,8 +50,9 @@ define(['util'], function (util) {
             switch(type){
                 case "enter":
                     mapMap[indexY][indexX]=[toolY,toolX];
-                    maper.render(mapMap);
-                    $.drawImage(mapCTX.canvas,0,0);
+                    map.setMap(mapMap);
+                    map.reload();
+                    $.drawImage(map.render(),0,0);
                     break;
                 case "down":
                     indexY++;
@@ -93,24 +85,21 @@ define(['util'], function (util) {
             }
             flushFlag=true;
         });
-    }
+    };
     var renderBox=function(){
         $.strokeStyle="#ff00ff";
         $.strokeRect(indexX*23,indexY*23,23,23);
         toolsCTX.context.strokeStyle="red";
         toolsCTX.context.strokeRect(toolX*23,toolY*23,23,23);
 
-    }
+    };
     var renderBackground = function () {
-       $.drawImage(mapCTX.canvas,0,0);
-        toolsCTX.context.drawImage(util.R.get(map),0,0);
+       $.drawImage(map.render(),0,0);
+        toolsCTX.context.drawImage(map.getSourceImage(),0,0);
         toolsCTX.context.fillText("P:输出地图到控制台",0,300);
         toolsCTX.context.fillText("空格:更换地图块",0,320);
         toolsCTX.context.fillText("上下左右:控制地图光标",0,340);
         toolsCTX.context.fillText("WSAD:控制地图块光标",0,360);
-
-        $.font = font;
-        $.fillStyle = fillStyle;
     };
     var render = function () {
         if (flushFlag == true) {
