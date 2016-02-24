@@ -27,6 +27,7 @@ define(function () {
     var setListener = function (context) {
         Listener = context;
     };
+
     addEventListener("keydown", function (e) {
         if (e.keyCode == 38) {
             Listener("up");
@@ -57,6 +58,11 @@ define(function () {
         }
         if(e.keyCode==80){
             Listener("p");
+        }
+    }, false);
+    addEventListener("keyup", function (e) {
+        if(Listener){
+            Listener("keyup");
         }
     }, false);
     /**
@@ -145,8 +151,11 @@ define(function () {
         var ctx = ctx;
         var update = function (dt) {
             _index += speed * dt;
-        }
-        var render = function (where) {
+        };
+        var reset=function(){
+            _index=0;
+        };
+        var render = function () {
             var frame;
             if (speed > 0) {
                 var max = frames.length;
@@ -170,36 +179,13 @@ define(function () {
             ctx.drawImage(R.get(url),
                 x, y,
                 size[0], size[1],
-                where[0],where[1],
+                0,0,
                 size[0], size[1]);
         }
         return {
+            reset:reset,
             render: render,
             update: update
-        }
-    };
-    var Map=function(ctx){
-        var ctx = ctx;
-        var url = 'images/public/map.png';
-        var size =23;
-        var renderBlock = function (which,where) {
-           ctx.drawImage(R.get(url),
-                which[1]*size,which[0]*size,
-                size,size,
-                where[1]*size,(where[0])*size,
-                size,size);
-        }
-        var render=function(maplist){
-            for(var i=0;i<maplist.length;i++){
-                for(var j=0;j<maplist[i].length;j++){
-                    //console.log(maplist[i][j],[i,j]);
-                    renderBlock(maplist[i][j],[i,j]);
-                }
-            }
-        }
-        return{
-            renderBlock:renderBlock,
-            render:render
         }
     };
     var CTX=function(width,height){
@@ -211,6 +197,44 @@ define(function () {
         return {canvas:canvasBuffer,
                 context:contextBuffer};
     }
+    var loadXML = function(xmlFile){
+        var xmlDoc=null;
+        //判断浏览器的类型
+        //支持IE浏览器
+        if(!window.DOMParser && window.ActiveXObject){
+            var xmlDomVersions = ['MSXML.2.DOMDocument.6.0','MSXML.2.DOMDocument.3.0','Microsoft.XMLDOM'];
+            for(var i=0;i<xmlDomVersions.length;i++){
+                try{
+                    xmlDoc = new ActiveXObject(xmlDomVersions[i]);
+                    break;
+                }catch(e){
+                }
+            }
+        }//支持Mozilla浏览器
+        else if(document.implementation && document.implementation.createDocument){
+            try{
+                /* document.implementation.createDocument('','',null); 方法的三个参数说明
+                 * 第一个参数是包含文档所使用的命名空间URI的字符串；
+                 * 第二个参数是包含文档根元素名称的字符串；
+                 * 第三个参数是要创建的文档类型（也称为doctype）
+                 */
+
+                xmlDoc = document.implementation.createDocument('','',null);
+                console.log(xmlDoc);
+            }catch(e){
+            }
+        }
+        else{
+            return null;
+        }
+
+
+        if(xmlDoc!=null){
+            xmlDoc.async = false;
+            xmlDoc.load(xmlFile);
+        }
+        return xmlDoc;
+    }
     return {
         // KeyBoard: KeyBoard,
         Sprite: Sprite,
@@ -220,6 +244,7 @@ define(function () {
         setListener: setListener,
         shadowText: shadowText,
         extend: extend,
-        toColorRgb: toColorRgb
+        toColorRgb: toColorRgb,
+        loadXML:loadXML
     };
 });

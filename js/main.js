@@ -28,10 +28,7 @@ require(['story','menu','day1','game1','mapEdit'],function(story,menu,day1,game1
         },{
             text: '地图编辑器', click: function () {
                 mapEdit.init({
-                    story:story,
-                    whenEnding:function(){
-                        console.log("mapedit ending");
-                    }
+                    story:story
                 });
                 story.Scenes.Play('mapedit');
             }
@@ -41,6 +38,5 @@ require(['story','menu','day1','game1','mapEdit'],function(story,menu,day1,game1
     story.Scenes.Add({name:'game1',scene:game1});
     story.Scenes.Add({name:'day1',scene:day1});
     story.Scenes.Add({name:'mapedit',scene:mapEdit});
-
     story.Renderer.start({FPS:10});
 });

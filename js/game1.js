@@ -1,12 +1,5 @@
-define(['util'], function (util) {
-    var current = 0;var top = 300;var left = 250;var height = 600;var width = 600;
-    var font = "30px 微软雅黑";var fillStyle = "white";var flushFlag = false;
-    var whenEnding;var $;
-    var RPC1='images/day1/RPC1.png';
-    var RPC2='images/day1/RPC2.png';
-    var dialog='images/day1/dialog.png';
-    var background = 'images/day1/bg.jpg';
-    var map='images/public/map.png';
+define(['util','map','hero'], function (util,map,hero) {
+    var $;var flushFlag =false;var heroX;var heroY;var heroSpeed=2;
     var mapMap=[
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
@@ -35,40 +28,16 @@ define(['util'], function (util) {
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
     ];
-    var maper;
-    var flyer={
-        image:'images/public/sprites.png',
-        pos:[0,78],
-        size:[80, 39],
-        speed:1,
-        frames:[0, 1, 2, 3, 2, 1],
-        sprite:null
-    };
-    var flyer1={
-        image:'images/public/sprites.png',
-        pos:[0,78],
-        size:[80, 39],
-        speed:1,
-        frames:[0, 1, 2, 3, 2, 1],
-        sprite:null
-    };
-    var flayerWhere=[100,100];
-    var flayer1Where=[200,200];
-    var mapCTX;
-    var gut={index:0,talks:[{spokesman:RPC1,talk:"你好这是第一句台词"},
-        {spokesman:RPC2,talk:"你好这是第二句台词"},
-        {spokesman:RPC1,talk:"你好这是第三句台词"}]};
-
     var init = function (config) {
         $=config.story.Renderer.getCanvas();
-        mapCTX=util.CTX();
-        util.R.load([background,dialog,RPC1,RPC2,flyer.image,map]);
+        map.init(mapMap);
+        hero.init();
         util.R.onReady(function(){
+            heroX=0;
+            heroY=0;
+            map.reload();
+            hero.reload();
             whenEnding=config.whenEnding;
-            flyer.sprite=util.Sprite($,flyer.image,flyer.pos ,flyer.size ,flyer.speed,flyer.frames);
-            flyer1.sprite=util.Sprite($,flyer1.image,flyer1.pos ,flyer1.size ,flyer1.speed,flyer1.frames);
-            maper=util.Map(mapCTX.context);
-            maper.render(mapMap);
             flushFlag=true;
         });
     };
@@ -76,59 +45,34 @@ define(['util'], function (util) {
         util.setListener(function(type){
             switch(type){
                 case "enter":
-                    if(gut.index<gut.talks.length-1){
-                        gut.index++;
-                    }else{
-                        whenEnding();
-                    }
                     break;
                 case "down":
-                    flayerWhere[1]++;
-                    flayer1Where[1]--;
-                    flyer.sprite.update(1);
-                    flyer1.sprite.update(1);
+                    heroY+=heroSpeed;
+                    hero.go(type);
                     break;
                 case "up":
-                    flayerWhere[1]--;
-                    flayer1Where[1]++;
-                    flyer.sprite.update(1);
-                    flyer1.sprite.update(1);
+                    heroY-=heroSpeed;
+                    hero.go(type);
                     break;
                 case "right":
-                    flayerWhere[0]++;
-                    flayer1Where[0]--;
-                    flyer.sprite.update(1);
-                    flyer1.sprite.update(1);
+                    heroX+=heroSpeed;
+                    hero.go(type);
                     break;
                 case "left":
-                    flayerWhere[0]--;
-                    flayer1Where[0]++;
-                    flyer.sprite.update(1);
-                    flyer1.sprite.update(1);
+                    heroX-=heroSpeed;
+                    hero.go(type);
                     break;
-
+                case "keyup":
+                    hero.go("stop");
+                    break;
             }
             flushFlag=true;
         });
     }
-    var renderBackground = function () {
-        //$.drawImage(util.R.get(background), 0, 0, width, height
-        $.drawImage(mapCTX.canvas,0,0);
-        $.drawImage(util.R.get(dialog), 0, 450, 580, 120);
-        $.font = font;
-        $.fillStyle = fillStyle;
-    };
-    var renderGut= function () {
-        flyer.sprite.render(flayerWhere);
-        flyer1.sprite.render(flayer1Where);
-        $.drawImage(util.R.get(gut.talks[gut.index].spokesman), 40,320,150,150);
-        $.fillText(gut.talks[gut.index].talk,140,500);
-
-    };
     var render = function () {
         if (flushFlag == true) {
-            renderBackground();
-            renderGut();
+            $.drawImage(map.render(), 0, 0);
+            $.drawImage(hero.render(),heroX,heroY);
             flushFlag = false;
         }
     };

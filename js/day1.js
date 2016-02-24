@@ -1,20 +1,18 @@
-define(['util'], function (util) {
-    var current = 0;var top = 300;var left = 250;var height = 600;var width = 600;
-    var font = "30px 微软雅黑";var fillStyle = "white";var flushFlag = false;
-    var whenEnding;var $;
-    var RPC1='images/day1/RPC1.png';
-    var RPC2='images/day1/RPC2.png';
-    var dialog='images/day1/dialog.png';
+define(['util','talk'], function (util,talk) {
+    var flushFlag = false;
+    var whenEnding;
+    var $;
     var background = 'images/day1/bg.jpg';
-    var gut={index:0,talks:[{spokesman:RPC1,talk:"你好这是第一句台词"},
-        {spokesman:RPC2,talk:"你好这是第二句台词"},
-        {spokesman:RPC1,talk:"你好这是第三句台词"}]};
+    var gut={
+        talks:[{spokesman:'images/day1/RPC1.png',talk:"你好这是第一句台词"},
+            {spokesman:'images/day1/RPC2.png',talk:"你好这是第二句台词"},
+            {spokesman:'images/day1/RPC1.png',talk:"你好这是第三句台词"}]};
+
     var listener=function(){
         util.setListener(function(type){
             switch(type){
                 case "enter":
-                    if(gut.index<gut.talks.length-1){
-                        gut.index++;
+                    if(talk.next()){
                         flushFlag=true;
                     }else{
                         whenEnding();
@@ -24,37 +22,26 @@ define(['util'], function (util) {
         });
     }
     var init = function (config) {
+        flushFlag = false;
         $=config.story.Renderer.getCanvas();
-        util.R.load([background,dialog,RPC1,RPC2]);
+        talk.init(gut);
+        util.R.load([background]);
         util.R.onReady(function(){
             flushFlag=true;
         });
         whenEnding=config.whenEnding;
     };
-    var renderBackground = function () {
-        $.drawImage(util.R.get(background), 0, 0, width, height);
-        $.drawImage(util.R.get(dialog), 0, 450, 580, 120);
-        $.font = font;
-        $.fillStyle = fillStyle;
-    };
-    var renderGut= function () {
-        $.drawImage(util.R.get(gut.talks[gut.index].spokesman), 40,320,150,150);
-        $.fillText(gut.talks[gut.index].talk,140,500);
-    };
     var render = function () {
         if (flushFlag == true) {
-            renderBackground();
-            renderGut();
+            $.drawImage(util.R.get(background), 0, 0);
+            $.drawImage(talk.render(),0,330);
             flushFlag = false;
         }
     };
-    var stop=function(){
-        //base.RemoveListenerKeyBoard();
-    };
+
     return {
         listener:listener,
-        init: init,//three two one action!!!
-        stop:stop,//
+        init: init,
         render: render
     };
 });
