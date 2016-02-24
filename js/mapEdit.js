@@ -4,6 +4,7 @@ define(['util','map'], function (util,map) {
     var indexY=0;
     var toolX=0;
     var toolY=0;
+    var size =32;
     var mapMap=[
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
         [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
@@ -88,9 +89,9 @@ define(['util','map'], function (util,map) {
     };
     var renderBox=function(){
         $.strokeStyle="#ff00ff";
-        $.strokeRect(indexX*23,indexY*23,23,23);
+        $.strokeRect(indexX*size,indexY*size,size,size);
         toolsCTX.context.strokeStyle="red";
-        toolsCTX.context.strokeRect(toolX*23,toolY*23,23,23);
+        toolsCTX.context.strokeRect(toolX*size,toolY*size,size,size);
 
     };
     var renderBackground = function () {

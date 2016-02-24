@@ -37,10 +37,19 @@ define(['util'], function (util) {
                 sprite.right.update(1);
                 sprite.right.render();
                 break;
-            case "stop":
+            case "stop up":
                 sprite.up.reset();
+                sprite.up.render();
+                break;
+            case "stop right":
                 sprite.left.reset();
+                sprite.left.render();
+                break;
+            case "stop left":
                 sprite.right.reset();
+                sprite.right.render();
+                break;
+            case "stop down":
                 sprite.down.reset();
                 sprite.down.render();
                 break;
