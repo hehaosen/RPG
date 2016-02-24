@@ -57,6 +57,7 @@ define(['util','map','hero'], function (util,map,hero) {
             if(map.isMeetStone(mapMap[heroY/heroSpeed][heroX/heroSpeed])){//如果碰到障碍物
                    heroX=oldX;
                     heroY=oldY;
+                    hero.go("stop "+type);
             }
             flushFlag=true;
         });
